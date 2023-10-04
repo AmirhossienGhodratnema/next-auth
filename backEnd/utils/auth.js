@@ -1,3 +1,4 @@
+import { compare, hash } from "bcryptjs";
 
 async function hashPassword(password) {
     const hashPasswor = await hash(password, 12);
