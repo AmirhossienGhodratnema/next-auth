@@ -1,16 +1,22 @@
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const { data, status } = useSession();
 
     const loginHandler = async () => {
         const res = await signIn('credentials', { email, password, redirect: false });
-        if(!res.error) router.replace('/dashbord')
+        if (!res.error) router.replace('/dashbord')
     };
+
+
+    useEffect(() => { if (status === 'authenticated') router.replace('/dashbord') }, [status])
+
+
 
 
     return (
@@ -27,3 +33,5 @@ export default function Login() {
         </div>
     )
 };
+
+
