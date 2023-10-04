@@ -10,7 +10,7 @@ export default function Login() {
 
     const loginHandler = async () => {
         const res = await signIn('credentials', { email, password, redirect: false });
-        if (!res.error) router.replace('/dashbord')
+        if (!res.error) window.location.href = '/dashbord';
     };
 
 
