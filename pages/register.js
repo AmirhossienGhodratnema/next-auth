@@ -1,11 +1,17 @@
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const { data, status } = useSession();
+
+    
+    useEffect(() => { if (status === 'authenticated') router.replace('/dashbord') }, [status])
+
 
     const handler = async () => {
         const res = await fetch('http://localhost:3000/api/auth/register', {
@@ -17,6 +23,10 @@ export default function Register() {
         console.log(data);
         if (data.success) router.push('/login');
     };
+
+    const gitHubHandlerLogin = () => {
+        signIn('github');
+    }
     return (
         <div>
             <h2>SignUp page</h2>
@@ -28,6 +38,7 @@ export default function Register() {
             <input type="password" onChange={e => setPassword(e.target.value)} />
             <br />
             <button onClick={handler}>singUp</button>
+            <button onClick={gitHubHandlerLogin}>Github</button>
         </div>
     )
 };
