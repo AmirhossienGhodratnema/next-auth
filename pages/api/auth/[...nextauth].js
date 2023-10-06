@@ -3,10 +3,15 @@ import { verifyPassword } from "@/backEnd/utils/auth";
 import ConnectionDB from "@/backEnd/utils/connectDB";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 
 export const authOptions = {
     session: { strategy: 'jwt' },
     providers: [
+        GitHubProvider({
+            clientId: process.env.GITHUB_ID,
+            clientSecret: process.env.GITHUB_SECRET
+        }),
         CredentialsProvider({
             // name: 'Credentials',
             // credentials: {
@@ -31,6 +36,7 @@ export const authOptions = {
             }
         }),
     ],
+    
     // pages:{
     //     signIn:'/login'
     // }
