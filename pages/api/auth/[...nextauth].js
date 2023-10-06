@@ -4,14 +4,13 @@ import ConnectionDB from "@/backEnd/utils/connectDB";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/lib/mongodb";
 
 export const authOptions = {
     session: { strategy: 'jwt' },
+
     providers: [
-        GitHubProvider({
-            clientId: process.env.GITHUB_ID,
-            clientSecret: process.env.GITHUB_SECRET
-        }),
         CredentialsProvider({
             // name: 'Credentials',
             // credentials: {
@@ -29,14 +28,19 @@ export const authOptions = {
 
                 if (!email || !password) throw new Error('Invalid data');
                 const user = await User.findOne({ email });
-                if(!user) throw new Error('User is not defined');
+                if (!user) throw new Error('User is not defined');
                 const resultPass = await verifyPassword(password, user.password);
-                if(!resultPass) throw new Error('Username or passowrd is inprrect');
-                return {email};
+                if (!resultPass) throw new Error('Username or passowrd is inprrect');
+                return { email };
             }
         }),
+        GitHubProvider({
+            clientId: process.env.GITHUB_ID,
+            clientSecret: process.env.GITHUB_SECRET
+        }),
     ],
-    
+    adapter: MongoDBAdapter(clientPromise),
+
     // pages:{
     //     signIn:'/login'
     // }
